@@ -1,11 +1,25 @@
-*{
-    box-sizing: border-box;
-}
+
 .buscaminas {
     border: 7px solid #808080;
     margin: 1em;
 }
+.facil{
+    width: 214px;
+}
 
+.medio{
+    width: 364px;
+}
+
+.dificil{
+    width: 514px;
+}
+.contenido{
+    max-width: 80%;
+    margin: 30px auto;
+    display: flex;
+    justify-content: center;
+}
 .fila{
     display: flex;
 	flex-wrap: wrap;

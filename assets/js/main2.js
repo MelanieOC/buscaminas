@@ -49,20 +49,28 @@ function generarBombas(matrix, bombas) {
 
 function dibujarTablero(matriz) {
     $('#tablero').empty();
-    let tabla=$('<div>');
+    let tabla=$('<div>').addClass('buscaminas');
+    if(nivelActual==1){
+        tabla.addClass('facil');
+    } else if(nivelActual==2){
+        tabla.addClass('medio');
+    } else{
+        tabla.addClass('dificil');
+    }
     for (let i = 0; i < matriz.length; i++) {
         celdas[i]=[];
         let fila = $('<div>').addClass('fila');
         for (let j = 0; j < matriz[i].length; j++) {
             let celda = $('<div>').addClass('text-center celda bloque').html(
                 `<div class="number${matriz[i][j]} oculto">${matriz[i][j]}</div>`
-            ).click(mostrar).appendTo(fila);
+            );
             if(matriz[i][j]=='*'){
                 celda.html(`<div class="bomba oculto"><i class="fa fa-bomb"></i></div>`);
             } else if(matriz[i][j]==0){
-                celda.addClass('vacio').html('');
+                celda.addClass('vacio').attr('id',`${i},${j}`).html('');
             }
             celdas[i][j]=celda;
+            celda.click(mostrar).appendTo(fila);
         }
         tabla.append(fila);
     }
@@ -71,10 +79,10 @@ function dibujarTablero(matriz) {
 
 function mostrar() {
     if (click) {
-        $(this).removeClass('bloque');
         let div =$(this).find('.oculto');
         $(div).show();
         if($(div).hasClass('bomba')){
+            $(this).css('background-color','red');
             click=false;
             let t = setTimeout(()=>{
                 perdiste();
@@ -82,22 +90,23 @@ function mostrar() {
         } else if ($(this).hasClass('vacio')) {
             abrirAlrededor($(this));
         }
+        $(this).removeClass('bloque');
     }
 }
 function perdiste(){
-    $('.oculto').parent().removeClass('bloque');
-    $('.oculto').show();
+    $('.bomba').parent().removeClass('bloque');
+    $('.bomba').show();
 }
 
 function abrirAlrededor(div){
-    console.log(div);
-    printMatrix(celdas);
-    for ( let i = 0; i < celdas.length; i++ ){
-        for ( let j = 0; j < celdas[i].length; j++ ){
-            if (celdas[i][j][0]==div) {
-                console.log('si');
-            }else{
-                console.log('no')
+    let coordenada = div.attr('id').split(',');
+    let i=coordenada[0];
+    let j=coordenada[1];
+    for ( let k = i == 0? i : i-1; k <= i+1 && k < celdas.length; k++ ){
+        for ( let l = j == 0? j : j-1; l <= j+1 && l < celdas[i].length; l++ ){
+            if (!celdas[k][l].find('.oculto').hasClass('bomba')) {
+                celdas[k][l].removeClass('bloque');
+                celdas[k][l].find('.oculto').show();
             }
         }
     }
@@ -106,13 +115,13 @@ function matrizNivel(nivel){
     let matriz;
     click=true;
     if (nivel == 1) {
-        matriz = reconocerMinas(generarBombas(initMatrix(9),10))
+        matriz = reconocerMinas(generarBombas(initMatrix(8),10))
     }
     else if (nivel == 2) {
-        matriz = reconocerMinas(generarBombas(initMatrix(14),30))
+        matriz = reconocerMinas(generarBombas(initMatrix(14),35))
     }
     else {
-        matriz = reconocerMinas(generarBombas(initMatrix(19),70))
+        matriz = reconocerMinas(generarBombas(initMatrix(20),80))
     }
     return matriz;
 }
