@@ -26,7 +26,7 @@ function reconocerMinas(matrix) {
 }
 
 
-function initMatrix (n) {
+function matrizInicial (n) {
     let matrix = [];
     for (let i = 0; i < n; i++) {
         matrix[i] = [];
@@ -57,7 +57,7 @@ function matrizNivel(nivel){
     let matriz;
     click=true;
     if (nivel == 1) {
-        matriz = reconocerMinas(generarBombas(initMatrix(8),10))
+        matriz = reconocerMinas(generarBombas(matrizInicial(8),10))
     }
     else if (nivel == 2) {
         matriz = reconocerMinas(generarBombas(initMatrix(14),35))
@@ -130,7 +130,7 @@ function mostrar(celda) {
                 perdiste();
             }, 500);
         } else if ($(celda).hasClass('vacio')) {
-            abrirAlrededor($(celda));
+            expandirse($(celda));
         }
     }
 }
@@ -144,13 +144,13 @@ function perdiste(){
     $('#reiniciar').empty().html('<i class="fa fa-frown-o fa-3x"></i>');
 }
 
-function abrirAlrededor(div){
+function expandirse(div){
     let coordenada = div.attr('id').split(',');
     let i=parseInt(coordenada[0]);
     let j=parseInt(coordenada[1]);
     for ( let k = i == 0? i : i-1 ; k <= (i+1) && k < celdas.length; k++ ){
         for (let l = j == 0? j : j-1; l <= (j+1) && l < celdas[0].length; l++ ){
-            if (!celdas[k][l].find('.oculto').hasClass('bomba')) {
+            if (!celdas[k][l].find('.oculto').hasClass('bomba')&&!celdas[k][l].hasClass('text-danger')) {
                 celdas[k][l].removeClass('bloque').off('mousedown');
                 celdas[k][l].find('.oculto').show();
                 if(celdas[k][l].hasClass('vacio')){

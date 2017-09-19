@@ -8,7 +8,7 @@ class buscaminas {
         this.click=undefined
     }
     
-    initMatrix(){
+    matrizInicial(){
         this.matriz=[];
         for (let i = 0; i < this.numero; i++) {
             this.matriz[i] = [];
@@ -60,7 +60,7 @@ class buscaminas {
                 this.bombas=80;
                 break;
         }
-        this.initMatrix();
+        this.matrizInicial();
         this.generarBombas();
         this.reconocerMinas();
     }
@@ -116,7 +116,7 @@ class buscaminas {
                     this.perdiste();
                 }, 500);
             } else if ($(celda).hasClass('vacio')) {
-                this.abrirAlrededor($(celda));
+                this.expandirese($(celda));
             }
         }
     }
@@ -128,16 +128,20 @@ class buscaminas {
     }
     perdiste(){
         $('.bomba').parent().removeClass('bloque');
+        if($('.bomba').parent().hasClass('text-danger')){
+            $('.bomba').parent().removeClass('text-danger');
+            $('.bomba').parent().find('.fa-flag').hide();
+        }
         $('.bomba').show();
-        $('#reiniciar').html('<i class="fa fa-frown-o fa-3x"></i>');
+        $('#reiniciar').empty().html('<i class="fa fa-frown-o fa-3x"></i>');
     }
-    abrirAlrededor(div){
+    expandirese(div){
         let coordenada = div.attr('id').split(',');
         let i=parseInt(coordenada[0]);
         let j=parseInt(coordenada[1]);
         for ( let k = i == 0? i : i-1 ; k <= (i+1) && k < this.celdas.length; k++ ){
             for (let l = j == 0? j : j-1; l <= (j+1) && l < this.celdas[0].length; l++ ){
-                if (!this.celdas[k][l].find('.oculto').hasClass('bomba')) {
+                if (!this.celdas[k][l].find('.oculto').hasClass('bomba')&&!this.celdas[k][l].hasClass('text-danger')) {
                     this.celdas[k][l].removeClass('bloque').off('mousedown');
                     this.celdas[k][l].find('.oculto').show();
                 }
@@ -175,6 +179,6 @@ class buscaminas {
 }
 
 $(document).ready(()=>{
-    let empezar = new buscaminas(1);
-    empezar.iniciar();
+    let jugar = new buscaminas(1);
+    jugar.iniciar();
 })

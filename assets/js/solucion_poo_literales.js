@@ -6,7 +6,7 @@ const buscaminas = {
     nivelActual: undefined,
     celdas:undefined,
     click:undefined,
-    initMatrix: ()=> {
+    matrizInicial: ()=> {
         buscaminas.matriz=[];
         for (let i = 0; i < buscaminas.numero; i++) {
             buscaminas.matriz[i] = [];
@@ -58,7 +58,7 @@ const buscaminas = {
                 buscaminas.bombas=80;
                 break;
         }
-        buscaminas.initMatrix();
+        buscaminas.matrizInicial();
         buscaminas.generarBombas();
         buscaminas.reconocerMinas();
     },
@@ -114,7 +114,7 @@ const buscaminas = {
                     buscaminas.perdiste();
                 }, 500);
             } else if ($(celda).hasClass('vacio')) {
-                buscaminas.abrirAlrededor($(celda));
+                buscaminas.expandirse($(celda));
             }
         }
     },
@@ -133,13 +133,13 @@ const buscaminas = {
         $('.bomba').show();
         $('#reiniciar').empty().html('<i class="fa fa-frown-o fa-3x"></i>');
     },
-    abrirAlrededor:(div)=>{
+    expandirse:(div)=>{
         let coordenada = div.attr('id').split(',');
         let i=parseInt(coordenada[0]);
         let j=parseInt(coordenada[1]);
         for ( let k = i == 0? i : i-1 ; k <= (i+1) && k < buscaminas.celdas.length; k++ ){
             for (let l = j == 0? j : j-1; l <= (j+1) && l < buscaminas.celdas[0].length; l++ ){
-                if (!buscaminas.celdas[k][l].find('.oculto').hasClass('bomba')) {
+                if (!buscaminas.celdas[k][l].find('.oculto').hasClass('bomba')&&!buscaminas.celdas[k][l].hasClass('text-danger')) {
                     buscaminas.celdas[k][l].removeClass('bloque').off('mousedown');
                     buscaminas.celdas[k][l].find('.oculto').show();
                 }
