@@ -1,4 +1,8 @@
 let click = true;
+let nivelActual=1;
+let facil = matrizNivel(nivelActual);
+let celdas = [];
+
 function reconocerMinas(matrix) {
     for ( let i = 0; i < matrix.length; i++ ){
         for ( let j = 0; j < matrix[i].length; j++ ){
@@ -47,6 +51,7 @@ function dibujarTablero(matriz) {
     $('#tablero').empty();
     let tabla=$('<div>');
     for (let i = 0; i < matriz.length; i++) {
+        celdas[i]=[];
         let fila = $('<div>').addClass('fila');
         for (let j = 0; j < matriz[i].length; j++) {
             let celda = $('<div>').addClass('text-center celda bloque').html(
@@ -55,8 +60,9 @@ function dibujarTablero(matriz) {
             if(matriz[i][j]=='*'){
                 celda.html(`<div class="bomba oculto"><i class="fa fa-bomb"></i></div>`);
             } else if(matriz[i][j]==0){
-                celda.html('');
+                celda.addClass('vacio').html('');
             }
+            celdas[i][j]=celda;
         }
         tabla.append(fila);
     }
@@ -71,9 +77,10 @@ function mostrar() {
         if($(div).hasClass('bomba')){
             click=false;
             let t = setTimeout(()=>{
-                //alert('perdiste');
                 perdiste();
             }, 600);
+        } else if ($(this).hasClass('vacio')) {
+            abrirAlrededor($(this));
         }
     }
 }
@@ -81,7 +88,21 @@ function perdiste(){
     $('.oculto').parent().removeClass('bloque');
     $('.oculto').show();
 }
-function reiniciar(nivel) {
+
+function abrirAlrededor(div){
+    console.log(div);
+    printMatrix(celdas);
+    for ( let i = 0; i < celdas.length; i++ ){
+        for ( let j = 0; j < celdas[i].length; j++ ){
+            if (celdas[i][j][0]==div) {
+                console.log('si');
+            }else{
+                console.log('no')
+            }
+        }
+    }
+} 
+function matrizNivel(nivel){
     let matriz;
     click=true;
     if (nivel == 1) {
@@ -93,6 +114,10 @@ function reiniciar(nivel) {
     else {
         matriz = reconocerMinas(generarBombas(initMatrix(19),70))
     }
+    return matriz;
+}
+function reiniciar() {
+    let matriz = matrizNivel(nivelActual);
     dibujarTablero(matriz);
 }
 function printMatrix (M){
@@ -101,8 +126,7 @@ function printMatrix (M){
         console.log (M[i]);   
     console.log ("___________________");
 }
-let nivelActual=1;
-let facil = reconocerMinas(generarBombas(initMatrix(9),10));
+
 
 $('#facil').click(()=>{
     nivelActual=1;
