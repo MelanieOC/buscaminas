@@ -86,17 +86,27 @@ const buscaminas = {
                     celda.addClass('vacio').attr('id',`${i},${j}`).html('');
                 }
                 buscaminas.celdas[i][j]=celda;
-                celda.appendTo(fila).click((e)=>buscaminas.mostrar(e.currentTarget));
+                celda.appendTo(fila).mousedown((e)=>buscaminas.eventoClick(e));
             }
             tabla.append(fila);
         }
         $('#tablero').append(tabla);
     },
+    eventoClick:(event)=>{
+        switch (event.which) {
+            case 1:
+                buscaminas.mostrar(event.target);
+                break;
+            case 3:
+                buscaminas.bandera(event.target);
+                break;
+        }
+    },
     mostrar: (celda)=> {
         if (buscaminas.click) {
             let div = $(celda).find('.oculto');
             $(div).show();
-            $(celda).removeClass('bloque').off('click');
+            $(celda).removeClass('bloque').off('mousedown');
             if($(div).hasClass('bomba')){
                 $(celda).css('background-color','red');
                 buscaminas.click=false;
@@ -108,10 +118,20 @@ const buscaminas = {
             }
         }
     },
+    bandera:(div)=>{
+        if(buscaminas.click){
+            event.preventDefault();
+            $(div).addClass('text-danger').append('<i class="fa fa-flag"></i>').off('mousedown');
+        }
+    },
     perdiste:()=>{
         $('.bomba').parent().removeClass('bloque');
+        if($('.bomba').parent().hasClass('text-danger')){
+            $('.bomba').parent().removeClass('text-danger');
+            $('.bomba').parent().find('.fa-flag').hide();
+        }
         $('.bomba').show();
-        $('#reiniciar').html('<i class="fa fa-frown-o fa-3x"></i>');
+        $('#reiniciar').empty().html('<i class="fa fa-frown-o fa-3x"></i>');
     },
     abrirAlrededor:(div)=>{
         let coordenada = div.attr('id').split(',');
@@ -120,7 +140,7 @@ const buscaminas = {
         for ( let k = i == 0? i : i-1 ; k <= (i+1) && k < buscaminas.celdas.length; k++ ){
             for (let l = j == 0? j : j-1; l <= (j+1) && l < buscaminas.celdas[0].length; l++ ){
                 if (!buscaminas.celdas[k][l].find('.oculto').hasClass('bomba')) {
-                    buscaminas.celdas[k][l].removeClass('bloque').off('click');
+                    buscaminas.celdas[k][l].removeClass('bloque').off('mousedown');
                     buscaminas.celdas[k][l].find('.oculto').show();
                 }
                 if(buscaminas.celdas[k][l].hasClass('vacio')){

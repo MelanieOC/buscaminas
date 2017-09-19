@@ -91,35 +91,55 @@ function dibujarTablero(matriz) {
                 celda.addClass('vacio').attr('id',`${i},${j}`).html('');
             }
             celdas[i][j]=celda;
-            celda.click(mostrar).appendTo(fila);
+            celda.mousedown((e)=>eventoClick(e)).appendTo(fila);
         }
         tabla.append(fila);
     }
     $('#tablero').append(tabla);
+}
+function eventoClick(event){
+    switch (event.which) {
+        case 1:
+            mostrar(event.target);
+            break;
+        case 3:
+            bandera(event.target);
+            break;
+    }
+}
+function bandera(div){
+    if(click){
+        event.preventDefault();
+        $(div).addClass('text-danger').append('<i class="fa fa-flag"></i>').off('mousedown');
+    }
 }
 function mostrarTablero(){
     let matriz = matrizNivel(nivelActual);
     $('#reiniciar').empty().html('<i class="fa fa-smile-o fa-3x"></i>');
     dibujarTablero(matriz);
 }
-function mostrar() {
+function mostrar(celda) {
     if (click) {
-        let div =$(this).find('.oculto');
+        let div =$(celda).find('.oculto');
         $(div).show();
-        $(this).removeClass('bloque').off('click');
+        $(celda).removeClass('bloque').off('mousedown');
         if($(div).hasClass('bomba')){
-            $(this).css('background-color','red');
+            $(celda).css('background-color','red');
             click=false;
             let t = setTimeout(()=>{
                 perdiste();
-            }, 600);
-        } else if ($(this).hasClass('vacio')) {
-            abrirAlrededor($(this));
+            }, 500);
+        } else if ($(celda).hasClass('vacio')) {
+            abrirAlrededor($(celda));
         }
     }
 }
 function perdiste(){
     $('.bomba').parent().removeClass('bloque');
+    if($('.bomba').parent().hasClass('text-danger')){
+        $('.bomba').parent().removeClass('text-danger');
+        $('.bomba').parent().find('.fa-flag').hide();
+    }
     $('.bomba').show();
     $('#reiniciar').empty().html('<i class="fa fa-frown-o fa-3x"></i>');
 }
@@ -131,17 +151,18 @@ function abrirAlrededor(div){
     for ( let k = i == 0? i : i-1 ; k <= (i+1) && k < celdas.length; k++ ){
         for (let l = j == 0? j : j-1; l <= (j+1) && l < celdas[0].length; l++ ){
             if (!celdas[k][l].find('.oculto').hasClass('bomba')) {
-                celdas[k][l].removeClass('bloque').off('click');
+                celdas[k][l].removeClass('bloque').off('mousedown');
                 celdas[k][l].find('.oculto').show();
-            }
-            if(celdas[k][l].hasClass('vacio')){
-                i=k;
-                j=l;
+                if(celdas[k][l].hasClass('vacio')){
+                    i=k;
+                    j=l;
+                }
             }
         }
     }
     
 } 
+
 
 function eventos(){
     $('#facil').click(()=>{
@@ -158,4 +179,14 @@ function eventos(){
     })
     $('#reiniciar').click(mostrarTablero);
 }
+
+const foo = str => {
+    str = `===${str}===`;
+    return str;
+};
+const a = 'hola';
+const b = foo(a);
+
+console.log(a);
+console.log(b);
 

@@ -88,17 +88,27 @@ class buscaminas {
                     celda.addClass('vacio').attr('id',`${i},${j}`).html('');
                 }
                 this.celdas[i][j]=celda;
-                celda.appendTo(fila).click((e)=>this.mostrar(e.currentTarget));
+                celda.appendTo(fila).mousedown((e)=>this.eventoClick(e));
             }
             tabla.append(fila);
         }
         $('#tablero').append(tabla);
     }
+    eventoClick(event){
+        switch (event.which) {
+            case 1:
+                this.mostrar(event.target);
+                break;
+            case 3:
+                this.bandera(event.target);
+                break;
+        }
+    }
     mostrar(celda){
         if (this.click) {
             let div = $(celda).find('.oculto');
             $(div).show();
-            $(celda).removeClass('bloque').off('click');
+            $(celda).removeClass('bloque').off('mousedown');
             if($(div).hasClass('bomba')){
                 $(celda).css('background-color','red');
                 this.click=false;
@@ -108,6 +118,12 @@ class buscaminas {
             } else if ($(celda).hasClass('vacio')) {
                 this.abrirAlrededor($(celda));
             }
+        }
+    }
+    bandera(div){
+        if(this.click){
+            event.preventDefault();
+            $(div).addClass('text-danger').append('<i class="fa fa-flag"></i>').off('mousedown');
         }
     }
     perdiste(){
@@ -122,7 +138,7 @@ class buscaminas {
         for ( let k = i == 0? i : i-1 ; k <= (i+1) && k < this.celdas.length; k++ ){
             for (let l = j == 0? j : j-1; l <= (j+1) && l < this.celdas[0].length; l++ ){
                 if (!this.celdas[k][l].find('.oculto').hasClass('bomba')) {
-                    this.celdas[k][l].removeClass('bloque').off('click');
+                    this.celdas[k][l].removeClass('bloque').off('mousedown');
                     this.celdas[k][l].find('.oculto').show();
                 }
                 if(this.celdas[k][l].hasClass('vacio')){
