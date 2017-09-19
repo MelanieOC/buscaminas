@@ -11,10 +11,9 @@
 	flex-wrap: wrap;
 }
 .celda {
-    background-color: #C7C4C4;
+    background-color: #E7E7E7;
     width: 25px;
     height: 25px;
-    color: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,4 +26,16 @@
     border-left: 3px solid white;
     border-bottom: 3px solid #808080;
     border-right: 3px solid #808080;
-  }
+}
+
+.oculto{
+    display: none;
+}
+
+.number1{
+    color: #070bb4;
+}
+
+.number2{
+    color: #196f19;
+}

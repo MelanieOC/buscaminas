@@ -1,4 +1,4 @@
-
+let click = true;
 function reconocerMinas(matrix) {
     for ( let i = 0; i < matrix.length; i++ ){
         for ( let j = 0; j < matrix[i].length; j++ ){
@@ -49,9 +49,11 @@ function dibujarTablero(matriz) {
     for (let i = 0; i < matriz.length; i++) {
         let fila = $('<div>').addClass('fila');
         for (let j = 0; j < matriz[i].length; j++) {
-            let celda = $('<div>').addClass('text-center celda bloque').html(matriz[i][j]).click(mostrar).appendTo(fila);
+            let celda = $('<div>').addClass('text-center celda bloque').html(
+                `<div class="number${matriz[i][j]} oculto">${matriz[i][j]}</div>`
+            ).click(mostrar).appendTo(fila);
             if(matriz[i][j]=='*'){
-                celda.html(`<i class="fa fa-bomb"></i>`);
+                celda.html(`<div class="bomba oculto"><i class="fa fa-bomb"></i></div>`);
             } else if(matriz[i][j]==0){
                 celda.html('');
             }
@@ -62,11 +64,26 @@ function dibujarTablero(matriz) {
 }
 
 function mostrar() {
-    $(this).removeClass('bloque').css('color','black');
+    if (click) {
+        $(this).removeClass('bloque');
+        let div =$(this).find('.oculto');
+        $(div).show();
+        if($(div).hasClass('bomba')){
+            click=false;
+            let t = setTimeout(()=>{
+                //alert('perdiste');
+                perdiste();
+            }, 600);
+        }
+    }
 }
-
+function perdiste(){
+    $('.oculto').parent().removeClass('bloque');
+    $('.oculto').show();
+}
 function reiniciar(nivel) {
     let matriz;
+    click=true;
     if (nivel == 1) {
         matriz = reconocerMinas(generarBombas(initMatrix(9),10))
     }
@@ -86,8 +103,7 @@ function printMatrix (M){
 }
 let nivelActual=1;
 let facil = reconocerMinas(generarBombas(initMatrix(9),10));
-let medio = reconocerMinas(generarBombas(initMatrix(5),6));
-let dificil = reconocerMinas(generarBombas(initMatrix(5),6));
+
 $('#facil').click(()=>{
     nivelActual=1;
     reiniciar(nivelActual);
