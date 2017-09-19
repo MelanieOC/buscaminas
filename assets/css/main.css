@@ -1,7 +1,6 @@
-#tablero{
-    width: 416px;
-    height: 416px;
+td{
+    width: 40px;
+    height: 40px;
     border: 1px solid black;
-    margin-left: 33%;
-    margin-top: 120px;
+    color: white;
 }

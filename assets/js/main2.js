@@ -1,13 +1,9 @@
 
 function reconocerMinas(matrix) {
-    for ( var i = 0; i < matrix.length; i++ )
-    {
-        for ( var j = 0; j < matrix[i].length; j++ )
-        {
-            for ( var k = i == 0? i : i-1; k <= i+1 && k < matrix.length; k++ )
-            {
-                for ( var l = j == 0? j : j-1; l <= j+1 && l < matrix[i].length; l++ )
-                {
+    for ( let i = 0; i < matrix.length; i++ ){
+        for ( let j = 0; j < matrix[i].length; j++ ){
+            for ( let k = i == 0? i : i-1; k <= i+1 && k < matrix.length; k++ ){
+                for ( let l = j == 0? j : j-1; l <= j+1 && l < matrix[i].length; l++ ){
                     if (matrix[k][l]=='*'&& matrix[i][j]!='*') {
                         matrix[i][j]++;
                     }
@@ -18,17 +14,12 @@ function reconocerMinas(matrix) {
     return matrix;
 }
 
-let prueba = [['*', 0, 0, 0, '*'],
-             [0, '*',0, '*', 0],
-             [0, 0, '*', 0, '*'],
-             ['*', 0, '*', 0, 0],
-             [0, 0, 0, 0, '*']];
-let prueba2 = generarBombas(initMatrix(5,5),6);
+
 function initMatrix (n,m) {
-    var matrix = [];
-    for (var i = 0; i < n; i++) {
+    let matrix = [];
+    for (let i = 0; i < n; i++) {
         matrix[i] = [];
-        for (var j = 0; j < m; j++) {
+        for (let j = 0; j < m; j++) {
             matrix[i][j] = 0;
         }
     }
@@ -40,11 +31,8 @@ function getRandomInt(min, max) {
 }
 
 function generarBombas(matrix, bombas) {
-	let fil = 0;
-	let col = 0;
-	fil = getRandomInt(0, matrix.length);
-	col = getRandomInt(0, matrix[0].length);
-
+	let fil = getRandomInt(0, matrix.length);
+	let col = getRandomInt(0, matrix[0].length);
 	for (let i = 0; i < bombas; i++) {
 		while (matrix[fil][col] == '*') {
 			fil = getRandomInt(0, matrix.length);
@@ -54,14 +42,41 @@ function generarBombas(matrix, bombas) {
     }
     return matrix;
 }
+
+function dibujarTablero(matriz) {
+    let tabla=$('<table>').attr('cellspacing','0');
+    for (let i = 0; i < matriz.length; i++) {
+        let fila = $('<tr>');
+        for (let j = 0; j < matriz[i].length; j++) {
+            let celda = $('<td>').addClass('text-center').html(matriz[i][j]).click(mostrar).appendTo(fila);
+            if(matriz[i][j]=='*'){
+                celda.html(`<i class="fa fa-bomb"></i>`);
+            } else if(matriz[i][j]==0){
+                celda.html('');
+            }
+        }
+        tabla.append(fila);
+    }
+    $('#tablero').append(tabla);
+}
+
+function mostrar() {
+    console.log($(this).html());
+    $(this).css('color','black');
+}
 function printMatrix (M){
     console.log ("___________________");
-    for (var i = 0; i < M.length; i++)
+    for (let i = 0; i < M.length; i++)
         console.log (M[i]);   
     console.log ("___________________");
 }
-let lol = prueba.map( v => v.map( vv => 0 ) );
 
+
+
+let prueba2 = generarBombas(initMatrix(5,5),6);
+let lol = reconocerMinas(prueba2);
 console.log(printMatrix(initMatrix (5,5)));
 console.log(printMatrix(prueba2));
-console.log(printMatrix(reconocerMinas(prueba2)));
+console.log(printMatrix(lol));
+
+dibujarTablero(lol);
