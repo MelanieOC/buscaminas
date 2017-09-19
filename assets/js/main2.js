@@ -15,11 +15,11 @@ function reconocerMinas(matrix) {
 }
 
 
-function initMatrix (n,m) {
+function initMatrix (n) {
     let matrix = [];
     for (let i = 0; i < n; i++) {
         matrix[i] = [];
-        for (let j = 0; j < m; j++) {
+        for (let j = 0; j < n; j++) {
             matrix[i][j] = 0;
         }
     }
@@ -44,11 +44,12 @@ function generarBombas(matrix, bombas) {
 }
 
 function dibujarTablero(matriz) {
-    let tabla=$('<table>').attr('cellspacing','0');
+    $('#tablero').empty();
+    let tabla=$('<div>');
     for (let i = 0; i < matriz.length; i++) {
-        let fila = $('<tr>');
+        let fila = $('<div>').addClass('fila');
         for (let j = 0; j < matriz[i].length; j++) {
-            let celda = $('<td>').addClass('text-center').html(matriz[i][j]).click(mostrar).appendTo(fila);
+            let celda = $('<div>').addClass('text-center celda bloque').html(matriz[i][j]).click(mostrar).appendTo(fila);
             if(matriz[i][j]=='*'){
                 celda.html(`<i class="fa fa-bomb"></i>`);
             } else if(matriz[i][j]==0){
@@ -61,8 +62,21 @@ function dibujarTablero(matriz) {
 }
 
 function mostrar() {
-    console.log($(this).html());
-    $(this).css('color','black');
+    $(this).removeClass('bloque').css('color','black');
+}
+
+function reiniciar(nivel) {
+    let matriz;
+    if (nivel == 1) {
+        matriz = reconocerMinas(generarBombas(initMatrix(9),10))
+    }
+    else if (nivel == 2) {
+        matriz = reconocerMinas(generarBombas(initMatrix(14),30))
+    }
+    else {
+        matriz = reconocerMinas(generarBombas(initMatrix(19),70))
+    }
+    dibujarTablero(matriz);
 }
 function printMatrix (M){
     console.log ("___________________");
@@ -70,13 +84,23 @@ function printMatrix (M){
         console.log (M[i]);   
     console.log ("___________________");
 }
+let nivelActual=1;
+let facil = reconocerMinas(generarBombas(initMatrix(9),10));
+let medio = reconocerMinas(generarBombas(initMatrix(5),6));
+let dificil = reconocerMinas(generarBombas(initMatrix(5),6));
+$('#facil').click(()=>{
+    nivelActual=1;
+    reiniciar(nivelActual);
+})
+$('#medio').click(()=>{
+    nivelActual=2;
+    reiniciar(nivelActual);
+})
+$('#dificil').click(()=>{
+    nivelActual=3;
+    reiniciar(nivelActual);
+})
+$('#reiniciar').click(()=>reiniciar(nivelActual));
 
 
-
-let prueba2 = generarBombas(initMatrix(5,5),6);
-let lol = reconocerMinas(prueba2);
-console.log(printMatrix(initMatrix (5,5)));
-console.log(printMatrix(prueba2));
-console.log(printMatrix(lol));
-
-dibujarTablero(lol);
+dibujarTablero(facil);

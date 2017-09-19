@@ -1,6 +1,30 @@
-td{
-    width: 40px;
-    height: 40px;
-    border: 1px solid black;
-    color: white;
+*{
+    box-sizing: border-box;
 }
+.buscaminas {
+    border: 7px solid #808080;
+    margin: 1em;
+}
+
+.fila{
+    display: flex;
+	flex-wrap: wrap;
+}
+.celda {
+    background-color: #C7C4C4;
+    width: 25px;
+    height: 25px;
+    color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #808080;
+}
+
+.bloque {
+    background-color: #c0c0c0;
+    border-top: 3px solid white;
+    border-left: 3px solid white;
+    border-bottom: 3px solid #808080;
+    border-right: 3px solid #808080;
+  }
