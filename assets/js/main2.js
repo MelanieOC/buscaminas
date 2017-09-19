@@ -96,6 +96,7 @@ function mostrar() {
 function perdiste(){
     $('.bomba').parent().removeClass('bloque');
     $('.bomba').show();
+    $('#reiniciar').empty().html('<i class="fa fa-frown-o fa-3x"></i>');
 }
 
 function abrirAlrededor(div){
@@ -130,31 +131,30 @@ function matrizNivel(nivel){
     }
     return matriz;
 }
+
 function reiniciar() {
     let matriz = matrizNivel(nivelActual);
+    $('#reiniciar').empty().html('<i class="fa fa-smile-o fa-3x"></i>');
     dibujarTablero(matriz);
 }
-function printMatrix (M){
-    console.log ("___________________");
-    for (let i = 0; i < M.length; i++)
-        console.log (M[i]);   
-    console.log ("___________________");
+
+function eventos(){
+    $('#facil').click(()=>{
+        nivelActual=1;
+        reiniciar();
+    })
+    $('#medio').click(()=>{
+        nivelActual=2;
+        reiniciar();
+    })
+    $('#dificil').click(()=>{
+        nivelActual=3;
+        reiniciar();
+    })
+    $('#reiniciar').click(reiniciar);
 }
 
-
-$('#facil').click(()=>{
-    nivelActual=1;
-    reiniciar(nivelActual);
-})
-$('#medio').click(()=>{
-    nivelActual=2;
-    reiniciar(nivelActual);
-})
-$('#dificil').click(()=>{
-    nivelActual=3;
-    reiniciar(nivelActual);
-})
-$('#reiniciar').click(()=>reiniciar(nivelActual));
 
 
 dibujarTablero(facil);
+eventos();
