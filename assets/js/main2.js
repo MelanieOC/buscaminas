@@ -81,6 +81,7 @@ function mostrar() {
     if (click) {
         let div =$(this).find('.oculto');
         $(div).show();
+        $(this).removeClass('bloque').off('click');
         if($(div).hasClass('bomba')){
             $(this).css('background-color','red');
             click=false;
@@ -90,7 +91,6 @@ function mostrar() {
         } else if ($(this).hasClass('vacio')) {
             abrirAlrededor($(this));
         }
-        $(this).removeClass('bloque');
     }
 }
 function perdiste(){
@@ -100,16 +100,21 @@ function perdiste(){
 
 function abrirAlrededor(div){
     let coordenada = div.attr('id').split(',');
-    let i=coordenada[0];
-    let j=coordenada[1];
-    for ( let k = i == 0? i : i-1; k <= i+1 && k < celdas.length; k++ ){
-        for ( let l = j == 0? j : j-1; l <= j+1 && l < celdas[i].length; l++ ){
+    let i=parseInt(coordenada[0]);
+    let j=parseInt(coordenada[1]);
+    for ( let k = i == 0? i : i-1 ; k <= (i+1) && k < celdas.length; k++ ){
+        for (let l = j == 0? j : j-1; l <= (j+1) && l < celdas[0].length; l++ ){
             if (!celdas[k][l].find('.oculto').hasClass('bomba')) {
-                celdas[k][l].removeClass('bloque');
+                celdas[k][l].removeClass('bloque').off('click');
                 celdas[k][l].find('.oculto').show();
+            }
+            if(celdas[k][l].hasClass('vacio')){
+                i=k;
+                j=l;
             }
         }
     }
+    
 } 
 function matrizNivel(nivel){
     let matriz;
