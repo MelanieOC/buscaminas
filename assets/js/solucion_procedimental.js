@@ -1,3 +1,5 @@
+'use strict';
+
 let click = true;
 let nivelActual=1;
 let facil = matrizNivel(nivelActual);
