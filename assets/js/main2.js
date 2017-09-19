@@ -1,48 +1,67 @@
-function minesweeper(matrix) {
-    for(i in matrix){
-        matrix[i].push(false);
-        matrix[i].unshift(false);
-    }
-    var ceros = [];
-    var res = [];
-    for(i in matrix){
-        res.push(matrix[i].map(a=> (a==true)?1:0));
-        for (j in matrix[i]){
-            ceros[j]=0;
-        }
-    }
-    res.push(ceros);
-    res.unshift(ceros);
-    var respuesta = []
-    for(var i = 0; i < matrix.length;i++){
-        respuesta[i]=[];
-        for(var j = 0; j < matrix[i].length - 2;j++){
-            respuesta[i][j]=res[i][j]+res[i][j+1]+res[i][j+2]+res[i+1][j]+res[i+1][j+2] + res[i+2][j] + res[i+2][j+1] + res[i+2][j+2];
-        }
-    }
-    return respuesta; 
-}
 
-function minesweeper(matrix) {
-    var result = matrix.map( v => v.map( vv => 0 ) );
-    var height = result.length;
-    var width = result[0].length;
-    for ( var i = 0; i < height; i++ )
+function reconocerMinas(matrix) {
+    for ( var i = 0; i < matrix.length; i++ )
     {
-        for ( var j = 0; j < width; j++ )
+        for ( var j = 0; j < matrix[i].length; j++ )
         {
-            if ( matrix[i][j] )
+            for ( var k = i == 0? i : i-1; k <= i+1 && k < matrix.length; k++ )
             {
-                for ( var k = i == 0? i : i-1; k <= i+1 && k < height; k++ )
+                for ( var l = j == 0? j : j-1; l <= j+1 && l < matrix[i].length; l++ )
                 {
-                    for ( var l = j == 0? j : j-1; l <= j+1 && l < width; l++ )
-                    {
-                        result[k][l]++;
+                    if (matrix[k][l]=='*'&& matrix[i][j]!='*') {
+                        matrix[i][j]++;
                     }
                 }
-                result[i][j]--; // don't count ourselves
             }
         }
     }
-    return result;
+    return matrix;
 }
+
+let prueba = [['*', 0, 0, 0, '*'],
+             [0, '*',0, '*', 0],
+             [0, 0, '*', 0, '*'],
+             ['*', 0, '*', 0, 0],
+             [0, 0, 0, 0, '*']];
+let prueba2 = generarBombas(initMatrix(5,5),6);
+function initMatrix (n,m) {
+    var matrix = [];
+    for (var i = 0; i < n; i++) {
+        matrix[i] = [];
+        for (var j = 0; j < m; j++) {
+            matrix[i][j] = 0;
+        }
+    }
+    return matrix;
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function generarBombas(matrix, bombas) {
+	let fil = 0;
+	let col = 0;
+	fil = getRandomInt(0, matrix.length);
+	col = getRandomInt(0, matrix[0].length);
+
+	for (let i = 0; i < bombas; i++) {
+		while (matrix[fil][col] == '*') {
+			fil = getRandomInt(0, matrix.length);
+            col = getRandomInt(0, matrix[0].length);
+		}
+		matrix[fil][col]="*";
+    }
+    return matrix;
+}
+function printMatrix (M){
+    console.log ("___________________");
+    for (var i = 0; i < M.length; i++)
+        console.log (M[i]);   
+    console.log ("___________________");
+}
+let lol = prueba.map( v => v.map( vv => 0 ) );
+
+console.log(printMatrix(initMatrix (5,5)));
+console.log(printMatrix(prueba2));
+console.log(printMatrix(reconocerMinas(prueba2)));
