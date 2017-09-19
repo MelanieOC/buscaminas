@@ -1,9 +1,14 @@
 'use strict';
+$(document).ready(iniciar);
 
 let click = true;
 let nivelActual=1;
-let facil = matrizNivel(nivelActual);
 let celdas = [];
+
+function iniciar (){
+    mostrarTablero();
+    eventos();
+}
 
 function reconocerMinas(matrix) {
     for ( let i = 0; i < matrix.length; i++ ){
@@ -48,6 +53,20 @@ function generarBombas(matrix, bombas) {
     }
     return matrix;
 }
+function matrizNivel(nivel){
+    let matriz;
+    click=true;
+    if (nivel == 1) {
+        matriz = reconocerMinas(generarBombas(initMatrix(8),10))
+    }
+    else if (nivel == 2) {
+        matriz = reconocerMinas(generarBombas(initMatrix(14),35))
+    }
+    else {
+        matriz = reconocerMinas(generarBombas(initMatrix(20),80))
+    }
+    return matriz;
+}
 
 function dibujarTablero(matriz) {
     $('#tablero').empty();
@@ -78,7 +97,11 @@ function dibujarTablero(matriz) {
     }
     $('#tablero').append(tabla);
 }
-
+function mostrarTablero(){
+    let matriz = matrizNivel(nivelActual);
+    $('#reiniciar').empty().html('<i class="fa fa-smile-o fa-3x"></i>');
+    dibujarTablero(matriz);
+}
 function mostrar() {
     if (click) {
         let div =$(this).find('.oculto');
@@ -119,44 +142,20 @@ function abrirAlrededor(div){
     }
     
 } 
-function matrizNivel(nivel){
-    let matriz;
-    click=true;
-    if (nivel == 1) {
-        matriz = reconocerMinas(generarBombas(initMatrix(8),10))
-    }
-    else if (nivel == 2) {
-        matriz = reconocerMinas(generarBombas(initMatrix(14),35))
-    }
-    else {
-        matriz = reconocerMinas(generarBombas(initMatrix(20),80))
-    }
-    return matriz;
-}
-
-function reiniciar() {
-    let matriz = matrizNivel(nivelActual);
-    $('#reiniciar').empty().html('<i class="fa fa-smile-o fa-3x"></i>');
-    dibujarTablero(matriz);
-}
 
 function eventos(){
     $('#facil').click(()=>{
         nivelActual=1;
-        reiniciar();
+        mostrarTablero();
     })
     $('#medio').click(()=>{
         nivelActual=2;
-        reiniciar();
+        mostrarTablero();
     })
     $('#dificil').click(()=>{
         nivelActual=3;
-        reiniciar();
+        mostrarTablero();
     })
-    $('#reiniciar').click(reiniciar);
+    $('#reiniciar').click(mostrarTablero);
 }
 
-
-
-dibujarTablero(facil);
-eventos();

@@ -130,30 +130,30 @@ const buscaminas = {
             }
         } 
     }, 
-    reiniciar:()=>{
+    mostrarTablero:()=>{
         buscaminas.matrizNivel();
-        $('#reiniciar').html('<i class="fa fa-smile-o fa-3x"></i>');
         buscaminas.dibujarTablero();
+        $('#reiniciar').html('<i class="fa fa-smile-o fa-3x"></i>');
     },
     eventos:()=>{
         $('#facil').click(()=>{
             buscaminas.nivelActual=1;
-            buscaminas.reiniciar();
+            buscaminas.mostrarTablero();
         })
         $('#medio').click(()=>{
             buscaminas.nivelActual=2;
-            buscaminas.reiniciar();
+            buscaminas.mostrarTablero();
         })
         $('#dificil').click(()=>{
             buscaminas.nivelActual=3;
-            buscaminas.reiniciar();
+            buscaminas.mostrarTablero();
         })
-        $('#reiniciar').click(buscaminas.reiniciar);
+        $('#reiniciar').click(buscaminas.mostrarTablero);
     },
     iniciar:()=>{
         buscaminas.eventos();
         buscaminas.nivelActual=1;
-        buscaminas.reiniciar();
+        buscaminas.mostrarTablero();
     }
 }
 
