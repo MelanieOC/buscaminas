@@ -91,26 +91,22 @@ function dibujarTablero(matriz) {
                 celda.addClass('vacio').attr('id',`${i},${j}`).html('');
             }
             celdas[i][j]=celda;
-            celda.mousedown((e)=>eventoClick(e)).appendTo(fila);
+            celda.appendTo(fila).click((e)=>mostrar(e.currentTarget)).bind('contextmenu',(e)=>bandera(e));
         }
         tabla.append(fila);
     }
     $('#tablero').append(tabla);
 }
-function eventoClick(event){
-    switch (event.which) {
-        case 1:
-            mostrar(event.target);
-            break;
-        case 3:
-            bandera(event.target);
-            break;
-    }
-}
-function bandera(div){
+function bandera(event){
+    event.preventDefault();
+    let div=event.target;
     if(click){
-        event.preventDefault();
-        $(div).addClass('text-danger').append('<i class="fa fa-flag"></i>').off('mousedown');
+        if($(div).hasClass('text-danger')){
+            $('.fa-flag').remove();
+            $(div).removeClass('text-danger').click((e)=>mostrar(e.currentTarget));
+        } else {
+            $(div).addClass('text-danger').append('<i class="fa fa-flag"></i>').off('click');
+        }
     }
 }
 function mostrarTablero(){
@@ -120,9 +116,9 @@ function mostrarTablero(){
 }
 function mostrar(celda) {
     if (click) {
-        let div =$(celda).find('.oculto');
+        let div = $(celda).find('.oculto');
         $(div).show();
-        $(celda).removeClass('bloque').off('mousedown');
+        $(celda).removeClass('bloque').off('contextmenu');
         if($(div).hasClass('bomba')){
             $(celda).css('background-color','red');
             click=false;
@@ -130,7 +126,7 @@ function mostrar(celda) {
                 perdiste();
             }, 500);
         } else if ($(celda).hasClass('vacio')) {
-            expandirse($(celda));
+            expandirese($(celda));
         }
     }
 }
@@ -138,8 +134,8 @@ function perdiste(){
     $('.bomba').parent().removeClass('bloque');
     if($('.bomba').parent().hasClass('text-danger')){
         $('.bomba').parent().removeClass('text-danger');
-        $('.bomba').parent().find('.fa-flag').hide();
-    }
+        $('.fa-flag').remove();
+    };
     $('.bomba').show();
     $('#reiniciar').empty().html('<i class="fa fa-frown-o fa-3x"></i>');
 }
@@ -151,7 +147,7 @@ function expandirse(div){
     for ( let k = i == 0? i : i-1 ; k <= (i+1) && k < celdas.length; k++ ){
         for (let l = j == 0? j : j-1; l <= (j+1) && l < celdas[0].length; l++ ){
             if (!celdas[k][l].find('.oculto').hasClass('bomba')&&!celdas[k][l].hasClass('text-danger')) {
-                celdas[k][l].removeClass('bloque').off('mousedown');
+                celdas[k][l].removeClass('bloque').off('click').off('contextmenu');
                 celdas[k][l].find('.oculto').show();
                 if(celdas[k][l].hasClass('vacio')){
                     i=k;

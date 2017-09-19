@@ -88,27 +88,17 @@ class buscaminas {
                     celda.addClass('vacio').attr('id',`${i},${j}`).html('');
                 }
                 this.celdas[i][j]=celda;
-                celda.appendTo(fila).mousedown((e)=>this.eventoClick(e));
+                celda.appendTo(fila).click((e)=>this.mostrar(e.currentTarget)).bind('contextmenu',(e)=>this.bandera(e));
             }
             tabla.append(fila);
         }
         $('#tablero').append(tabla);
     }
-    eventoClick(event){
-        switch (event.which) {
-            case 1:
-                this.mostrar(event.target);
-                break;
-            case 3:
-                this.bandera(event.target);
-                break;
-        }
-    }
     mostrar(celda){
         if (this.click) {
             let div = $(celda).find('.oculto');
             $(div).show();
-            $(celda).removeClass('bloque').off('mousedown');
+            $(celda).removeClass('bloque').off('contextmenu');
             if($(div).hasClass('bomba')){
                 $(celda).css('background-color','red');
                 this.click=false;
@@ -120,18 +110,24 @@ class buscaminas {
             }
         }
     }
-    bandera(div){
+    bandera(event){
+        event.preventDefault();
+        let div=event.target;
         if(this.click){
-            event.preventDefault();
-            $(div).addClass('text-danger').append('<i class="fa fa-flag"></i>').off('mousedown');
+            if($(div).hasClass('text-danger')){
+                $('.fa-flag').remove();
+                $(div).removeClass('text-danger').click((e)=>this.mostrar(e.currentTarget));
+            } else {
+                $(div).addClass('text-danger').append('<i class="fa fa-flag"></i>').off('click');
+            }
         }
     }
     perdiste(){
         $('.bomba').parent().removeClass('bloque');
         if($('.bomba').parent().hasClass('text-danger')){
             $('.bomba').parent().removeClass('text-danger');
-            $('.bomba').parent().find('.fa-flag').hide();
-        }
+            $('.fa-flag').remove();
+        };
         $('.bomba').show();
         $('#reiniciar').empty().html('<i class="fa fa-frown-o fa-3x"></i>');
     }
@@ -142,7 +138,7 @@ class buscaminas {
         for ( let k = i == 0? i : i-1 ; k <= (i+1) && k < this.celdas.length; k++ ){
             for (let l = j == 0? j : j-1; l <= (j+1) && l < this.celdas[0].length; l++ ){
                 if (!this.celdas[k][l].find('.oculto').hasClass('bomba')&&!this.celdas[k][l].hasClass('text-danger')) {
-                    this.celdas[k][l].removeClass('bloque').off('mousedown');
+                    this.celdas[k][l].removeClass('bloque').off('click').off('contextmenu');
                     this.celdas[k][l].find('.oculto').show();
                 }
                 if(this.celdas[k][l].hasClass('vacio')){
