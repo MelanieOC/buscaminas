@@ -60,10 +60,10 @@ function matrizNivel(nivel){
         matriz = reconocerMinas(generarBombas(matrizInicial(8),10))
     }
     else if (nivel == 2) {
-        matriz = reconocerMinas(generarBombas(initMatrix(14),35))
+        matriz = reconocerMinas(generarBombas(matrizInicial(14),35))
     }
     else {
-        matriz = reconocerMinas(generarBombas(initMatrix(20),80))
+        matriz = reconocerMinas(generarBombas(matrizInicial(20),80))
     }
     return matriz;
 }
@@ -126,7 +126,7 @@ function mostrar(celda) {
                 perdiste();
             }, 500);
         } else if ($(celda).hasClass('vacio')) {
-            expandirese($(celda));
+            expandirse($(celda));
         }
     }
 }
@@ -146,19 +146,18 @@ function expandirse(div){
     let j=parseInt(coordenada[1]);
     for ( let k = i == 0? i : i-1 ; k <= (i+1) && k < celdas.length; k++ ){
         for (let l = j == 0? j : j-1; l <= (j+1) && l < celdas[0].length; l++ ){
-            if (!celdas[k][l].find('.oculto').hasClass('bomba')&&!celdas[k][l].hasClass('text-danger')) {
+            if (!celdas[k][l].find('.oculto').hasClass('bomba')&&!celdas[k][l].hasClass('text-danger')&& celdas[k][l].hasClass('bloque')) {
                 celdas[k][l].removeClass('bloque').off('click').off('contextmenu');
                 celdas[k][l].find('.oculto').show();
                 if(celdas[k][l].hasClass('vacio')){
-                    i=k;
-                    j=l;
+                    expandirse(celdas[k][l]);
                 }
             }
+            
         }
-    }
+    } 
     
 } 
-
 
 function eventos(){
     $('#facil').click(()=>{
@@ -175,14 +174,4 @@ function eventos(){
     })
     $('#reiniciar').click(mostrarTablero);
 }
-
-const foo = str => {
-    str = `===${str}===`;
-    return str;
-};
-const a = 'hola';
-const b = foo(a);
-
-console.log(a);
-console.log(b);
 

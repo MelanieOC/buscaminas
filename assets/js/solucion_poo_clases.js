@@ -106,7 +106,7 @@ class buscaminas {
                     this.perdiste();
                 }, 500);
             } else if ($(celda).hasClass('vacio')) {
-                this.expandirese($(celda));
+                this.expandirse($(celda));
             }
         }
     }
@@ -131,20 +131,20 @@ class buscaminas {
         $('.bomba').show();
         $('#reiniciar').empty().html('<i class="fa fa-frown-o fa-3x"></i>');
     }
-    expandirese(div){
+    expandirse(div){
         let coordenada = div.attr('id').split(',');
         let i=parseInt(coordenada[0]);
         let j=parseInt(coordenada[1]);
         for ( let k = i == 0? i : i-1 ; k <= (i+1) && k < this.celdas.length; k++ ){
             for (let l = j == 0? j : j-1; l <= (j+1) && l < this.celdas[0].length; l++ ){
-                if (!this.celdas[k][l].find('.oculto').hasClass('bomba')&&!this.celdas[k][l].hasClass('text-danger')) {
+                if (!this.celdas[k][l].find('.oculto').hasClass('bomba')&&!this.celdas[k][l].hasClass('text-danger')&& this.celdas[k][l].hasClass('bloque')) {
                     this.celdas[k][l].removeClass('bloque').off('click').off('contextmenu');
                     this.celdas[k][l].find('.oculto').show();
+                    if(this.celdas[k][l].hasClass('vacio')){
+                        this.expandirse(this.celdas[k][l]);
+                    }
                 }
-                if(this.celdas[k][l].hasClass('vacio')){
-                    i=k;
-                    j=l;
-                }
+                
             }
         } 
     } 

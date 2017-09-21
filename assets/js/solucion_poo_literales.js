@@ -104,7 +104,7 @@ const buscaminas = {
                     buscaminas.perdiste();
                 }, 500);
             } else if ($(celda).hasClass('vacio')) {
-                buscaminas.expandirese($(celda));
+                buscaminas.expandirse($(celda));
             }
         }
     },
@@ -135,14 +135,14 @@ const buscaminas = {
         let j=parseInt(coordenada[1]);
         for ( let k = i == 0? i : i-1 ; k <= (i+1) && k < buscaminas.celdas.length; k++ ){
             for (let l = j == 0? j : j-1; l <= (j+1) && l < buscaminas.celdas[0].length; l++ ){
-                if (!buscaminas.celdas[k][l].find('.oculto').hasClass('bomba')&&!buscaminas.celdas[k][l].hasClass('text-danger')) {
+                if (!buscaminas.celdas[k][l].find('.oculto').hasClass('bomba')&&!buscaminas.celdas[k][l].hasClass('text-danger')&& buscaminas.celdas[k][l].hasClass('bloque')) {
                     buscaminas.celdas[k][l].removeClass('bloque').off('click').off('contextmenu');
                     buscaminas.celdas[k][l].find('.oculto').show();
+                    if(buscaminas.celdas[k][l].hasClass('vacio')){
+                        buscaminas.expandirse(buscaminas.celdas[k][l]);
+                    }
                 }
-                if(buscaminas.celdas[k][l].hasClass('vacio')){
-                    i=k;
-                    j=l;
-                }
+                
             }
         } 
     }, 
