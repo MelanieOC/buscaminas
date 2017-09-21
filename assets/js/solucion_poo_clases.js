@@ -1,11 +1,13 @@
 class buscaminas {
     constructor(nivel){
-        this.nivelActual= nivel,
-        this.matriz= undefined,
-        this.bombas= undefined,
-        this.numero= undefined,
-        this.celdas=undefined,
-        this.click=undefined
+        this.nivelActual= nivel;
+        this.matriz= undefined;
+        this.bombas= undefined;
+        this.numero= undefined;
+        this.celdas=undefined;
+        this.click=undefined;
+        this.puntaje=undefined;
+        this.contar=0;
     }
     
     matrizInicial(){
@@ -17,16 +19,16 @@ class buscaminas {
             }
         }
     }
-    getRandomInt(min, max){
+    random(min, max){
         return Math.floor(Math.random() * (max - min)) + min;
     }
     generarBombas(){
-        let fil = this.getRandomInt(0, this.matriz.length);
-        let col = this.getRandomInt(0, this.matriz[0].length);
+        let fil = this.random(0, this.matriz.length);
+        let col = this.random(0, this.matriz[0].length);
         for (let i = 0; i < this.bombas; i++) {
             while (this.matriz[fil][col] == '*') {
-                fil = this.getRandomInt(0, this.matriz.length);
-                col = this.getRandomInt(0, this.matriz[0].length);
+                fil = this.random(0, this.matriz.length);
+                col = this.random(0, this.matriz[0].length);
             }
             this.matriz[fil][col]="*";
         }
@@ -46,18 +48,22 @@ class buscaminas {
     }
     matrizNivel(){
         this.click=true;
+        this.contar=0;
         switch (this.nivelActual) {
             case 1:
                 this.numero=8;
                 this.bombas=10;
+                this.puntaje=54;
                 break;
             case 2:
                 this.numero=14;
                 this.bombas=35;
+                this.puntaje=161;
                 break;
             case 3:
                 this.numero=20;
                 this.bombas=80;
+                this.puntaje=320;
                 break;
         }
         this.matrizInicial();
@@ -99,6 +105,7 @@ class buscaminas {
             let div = $(celda).find('.oculto');
             $(div).show();
             $(celda).removeClass('bloque').off('contextmenu');
+            this.ganaste();
             if($(div).hasClass('bomba')){
                 $(celda).css('background-color','red');
                 this.click=false;
@@ -131,6 +138,13 @@ class buscaminas {
         $('.bomba').show();
         $('#reiniciar').empty().html('<i class="fa fa-frown-o fa-3x"></i>');
     }
+    ganaste(){
+        this.contar++;
+        if(this.contar==this.puntaje){
+            this.click=false;
+            console.log('ganaste');
+        }
+    }
     expandirse(div){
         let coordenada = div.attr('id').split(',');
         let i=parseInt(coordenada[0]);
@@ -139,6 +153,7 @@ class buscaminas {
             for (let l = j == 0? j : j-1; l <= (j+1) && l < this.celdas[0].length; l++ ){
                 if (!this.celdas[k][l].find('.oculto').hasClass('bomba')&&!this.celdas[k][l].hasClass('text-danger')&& this.celdas[k][l].hasClass('bloque')) {
                     this.celdas[k][l].removeClass('bloque').off('click').off('contextmenu');
+                    this.ganaste();
                     this.celdas[k][l].find('.oculto').show();
                     if(this.celdas[k][l].hasClass('vacio')){
                         this.expandirse(this.celdas[k][l]);

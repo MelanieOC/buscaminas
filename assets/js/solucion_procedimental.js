@@ -2,6 +2,8 @@
 $(document).ready(iniciar);
 
 let click = true;
+let puntaje=null;
+let contar= 0;
 let nivelActual=1;
 let celdas = [];
 
@@ -37,17 +39,17 @@ function matrizInicial (n) {
     return matrix;
 }
 
-function getRandomInt(min, max) {
+function random(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
 function generarBombas(matrix, bombas) {
-	let fil = getRandomInt(0, matrix.length);
-	let col = getRandomInt(0, matrix[0].length);
+	let fil = random(0, matrix.length);
+	let col = random(0, matrix[0].length);
 	for (let i = 0; i < bombas; i++) {
 		while (matrix[fil][col] == '*') {
-			fil = getRandomInt(0, matrix.length);
-            col = getRandomInt(0, matrix[0].length);
+			fil = random(0, matrix.length);
+            col = random(0, matrix[0].length);
 		}
 		matrix[fil][col]="*";
     }
@@ -57,12 +59,15 @@ function matrizNivel(nivel){
     let matriz;
     click=true;
     if (nivel == 1) {
+        puntaje=54;
         matriz = reconocerMinas(generarBombas(matrizInicial(8),10))
     }
     else if (nivel == 2) {
+        puntaje=161;
         matriz = reconocerMinas(generarBombas(matrizInicial(14),35))
     }
     else {
+        puntaje=320;
         matriz = reconocerMinas(generarBombas(matrizInicial(20),80))
     }
     return matriz;
@@ -112,6 +117,7 @@ function bandera(event){
 }
 function mostrarTablero(){
     let matriz = matrizNivel(nivelActual);
+    contar=0;
     $('#reiniciar').empty().html('<i class="fa fa-smile-o fa-3x"></i>');
     dibujarTablero(matriz);
 }
@@ -119,7 +125,8 @@ function mostrar(celda) {
     if (click) {
         let div = $(celda).find('.oculto');
         $(div).show();
-        $(celda).removeClass('bloque').off('contextmenu');
+        $(celda).removeClass('bloque').off('contextmenu').off('click');
+        ganaste();
         if($(div).hasClass('bomba')){
             $(celda).css('background-color','red');
             click=false;
@@ -149,6 +156,7 @@ function expandirse(div){
         for (let l = j == 0? j : j-1; l <= (j+1) && l < celdas[0].length; l++ ){
             if (!celdas[k][l].find('.oculto').hasClass('bomba')&&!celdas[k][l].hasClass('text-danger')&& celdas[k][l].hasClass('bloque')) {
                 celdas[k][l].removeClass('bloque').off('click').off('contextmenu');
+                ganaste();
                 celdas[k][l].find('.oculto').show();
                 if(celdas[k][l].hasClass('vacio')){
                     expandirse(celdas[k][l]);
@@ -157,6 +165,14 @@ function expandirse(div){
         }
     }   
 } 
+
+function ganaste() {
+    contar++;
+    if(contar==puntaje){
+        click=false;
+        console.log('ganaste');
+    }
+}
 
 function eventos(){
     $('#facil').click(()=>{

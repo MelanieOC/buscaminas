@@ -6,6 +6,8 @@ const buscaminas = {
     nivelActual: undefined,
     celdas:undefined,
     click:undefined,
+    puntaje: undefined,
+    contar:0,
     matrizInicial: ()=> {
         buscaminas.matriz=[];
         for (let i = 0; i < buscaminas.numero; i++) {
@@ -15,16 +17,21 @@ const buscaminas = {
             }
         }
     },
-    getRandomInt:(min, max)=> {
+    random
+    :(min, max)=> {
         return Math.floor(Math.random() * (max - min)) + min;
     },
     generarBombas:()=> {
-        let fil = buscaminas.getRandomInt(0, buscaminas.matriz.length);
-        let col = buscaminas.getRandomInt(0, buscaminas.matriz[0].length);
+        let fil = buscaminas.random
+        (0, buscaminas.matriz.length);
+        let col = buscaminas.random
+        (0, buscaminas.matriz[0].length);
         for (let i = 0; i < buscaminas.bombas; i++) {
             while (buscaminas.matriz[fil][col] == '*') {
-                fil = buscaminas.getRandomInt(0, buscaminas.matriz.length);
-                col = buscaminas.getRandomInt(0, buscaminas.matriz[0].length);
+                fil = buscaminas.random
+                (0, buscaminas.matriz.length);
+                col = buscaminas.random
+                (0, buscaminas.matriz[0].length);
             }
             buscaminas.matriz[fil][col]="*";
         }
@@ -44,18 +51,22 @@ const buscaminas = {
     },
     matrizNivel:()=>{
         buscaminas.click=true;
+        buscaminas.contar=0;
         switch (buscaminas.nivelActual) {
             case 1:
                 buscaminas.numero=8;
                 buscaminas.bombas=10;
+                buscaminas.puntaje=54;
                 break;
             case 2:
                 buscaminas.numero=14;
                 buscaminas.bombas=35;
+                buscaminas.puntaje=161;
                 break;
             case 3:
                 buscaminas.numero=20;
                 buscaminas.bombas=80;
+                buscaminas.puntaje=320;
                 break;
         }
         buscaminas.matrizInicial();
@@ -97,6 +108,7 @@ const buscaminas = {
             let div = $(celda).find('.oculto');
             $(div).show();
             $(celda).removeClass('bloque').off('contextmenu');
+            buscaminas.ganaste();
             if($(div).hasClass('bomba')){
                 $(celda).css('background-color','red');
                 buscaminas.click=false;
@@ -129,6 +141,13 @@ const buscaminas = {
         $('.bomba').show();
         $('#reiniciar').empty().html('<i class="fa fa-frown-o fa-3x"></i>');
     },
+    ganaste:()=>{
+        buscaminas.contar++;
+        if(buscaminas.contar==buscaminas.puntaje){
+            buscaminas.click=false;
+            console.log('ganaste');
+        }
+    },
     expandirse:(div)=>{
         let coordenada = div.attr('id').split(',');
         let i=parseInt(coordenada[0]);
@@ -137,6 +156,7 @@ const buscaminas = {
             for (let l = j == 0? j : j-1; l <= (j+1) && l < buscaminas.celdas[0].length; l++ ){
                 if (!buscaminas.celdas[k][l].find('.oculto').hasClass('bomba')&&!buscaminas.celdas[k][l].hasClass('text-danger')&& buscaminas.celdas[k][l].hasClass('bloque')) {
                     buscaminas.celdas[k][l].removeClass('bloque').off('click').off('contextmenu');
+                    buscaminas.ganaste();
                     buscaminas.celdas[k][l].find('.oculto').show();
                     if(buscaminas.celdas[k][l].hasClass('vacio')){
                         buscaminas.expandirse(buscaminas.celdas[k][l]);
