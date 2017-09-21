@@ -112,7 +112,7 @@ class buscaminas {
     }
     bandera(event){
         event.preventDefault();
-        let div=event.target;
+        let div=event.currentTarget;
         if(this.click){
             if($(div).hasClass('text-danger')){
                 $('.fa-flag').remove();
