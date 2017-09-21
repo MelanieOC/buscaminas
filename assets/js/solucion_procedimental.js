@@ -97,12 +97,13 @@ function dibujarTablero(matriz) {
     }
     $('#tablero').append(tabla);
 }
+
 function bandera(event){
     event.preventDefault();
-    let div=event.target;
     if(click){
+        let div=event.currentTarget;
         if($(div).hasClass('text-danger')){
-            $('.fa-flag').remove();
+            $(div).find('.fa-flag').remove();
             $(div).removeClass('text-danger').click((e)=>mostrar(e.currentTarget));
         } else {
             $(div).addClass('text-danger').append('<i class="fa fa-flag"></i>').off('click');
@@ -152,11 +153,9 @@ function expandirse(div){
                 if(celdas[k][l].hasClass('vacio')){
                     expandirse(celdas[k][l]);
                 }
-            }
-            
+            }   
         }
-    } 
-    
+    }   
 } 
 
 function eventos(){
